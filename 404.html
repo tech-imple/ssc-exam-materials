@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Redirecting…</title>
+<script>
+  // GitHub Pages has no server-side routing, so a direct visit or refresh
+  // to e.g. /ssc-exam-materials/nda-exam-materials/free-test hits this 404
+  // page (no real file exists there). We forward the intended path to
+  // index.html via a query param; index.html restores it with
+  // history.replaceState so the address bar ends up correct again.
+  var path = location.pathname + location.search + location.hash;
+  location.replace("/ssc-exam-materials/?redirect=" + encodeURIComponent(path));
+</script>
+</head>
+<body></body>
+</html>

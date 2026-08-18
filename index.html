@@ -126,17 +126,63 @@
 </div>
 
 <script>
+// ---- restore path after a 404-page redirect (see /404.html) ----------
+(function restoreRedirectedPath() {
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get("redirect");
+  if (redirect) {
+    history.replaceState(null, "", redirect);
+  }
+})();
+
+// ---- ROUTING CONFIG -------------------------------------------------
+// GitHub Pages project sites always serve under /<repo-name>/. That
+// prefix is fixed by GitHub, not by this app — update it here if you
+// ever rename the repo. Everything AFTER this prefix is fully dynamic:
+// /<examSlug>-exam-materials/<categorySlug>
+const SITE_BASE = "/ssc-exam-materials";
+// ----------------------------------------------------------------------
+
 const CATEGORY_META = {
-  freeTests:  { label: "Free Tests", initial: "FT", tag: "Free Test" },
-  pyp:        { label: "Previous Year Papers", initial: "PY", tag: "PYP" },
-  quizzes:    { label: "Quizzes", initial: "QZ", tag: "Quiz" },
-  tests:      { label: "Live Tests", initial: "LT", tag: "Live" },
-  testSeries: { label: "Test Series", initial: "TS", tag: "Series" },
-  courses:    { label: "Courses", initial: "CR", tag: "Course" },
-  videos:     { label: "Video Lectures", initial: "VL", tag: "Video" },
-  articles:   { label: "Articles", initial: "AR", tag: "Article" },
+  freeTests:  { label: "Free Tests", initial: "FT", tag: "Free Test", slug: "free-test" },
+  pyp:        { label: "Previous Year Papers", initial: "PY", tag: "PYP", slug: "previous-year-papers" },
+  quizzes:    { label: "Quizzes", initial: "QZ", tag: "Quiz", slug: "quizzes" },
+  tests:      { label: "Live Tests", initial: "LT", tag: "Live", slug: "live-test" },
+  testSeries: { label: "Test Series", initial: "TS", tag: "Series", slug: "test-series" },
+  courses:    { label: "Courses", initial: "CR", tag: "Course", slug: "courses" },
+  videos:     { label: "Video Lectures", initial: "VL", tag: "Video", slug: "video-lectures" },
+  articles:   { label: "Articles", initial: "AR", tag: "Article", slug: "articles" },
 };
 const TAB_ORDER = Object.keys(CATEGORY_META);
+const SLUG_TO_TAB = Object.fromEntries(TAB_ORDER.map(k => [CATEGORY_META[k].slug, k]));
+
+function slugifyExam(name) {
+  return (name || "").trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+function examSlugToName(slug) {
+  return slug.split("-").filter(Boolean).join(" ").toUpperCase();
+}
+function stripBase(pathname) {
+  return (SITE_BASE && pathname.indexOf(SITE_BASE) === 0) ? pathname.slice(SITE_BASE.length) : pathname;
+}
+function routeFor(examName, tabKey) {
+  return `${SITE_BASE}/${slugifyExam(examName)}-exam-materials/${CATEGORY_META[tabKey].slug}`;
+}
+function parseRoute(pathname) {
+  const segs = stripBase(pathname).split("/").filter(Boolean);
+  const examSeg = segs[0] || "";
+  const catSeg = segs[1] || "";
+  const examSlug = examSeg.replace(/-exam-materials$/, "");
+  return {
+    examName: examSlug ? examSlugToName(examSlug) : null,
+    tab: SLUG_TO_TAB[catSeg] || "freeTests",
+  };
+}
+function navigateTo(examName, tabKey, { replace = false } = {}) {
+  const url = routeFor(examName, tabKey);
+  if (replace) history.replaceState({ examName, tabKey }, "", url);
+  else history.pushState({ examName, tabKey }, "", url);
+}
 
 function makeMockData(examName, term) {
   const priced = (mrp) => {
@@ -191,12 +237,16 @@ function buildFilters() {
     renderMain();
   }));
 
+  const examName = document.getElementById("examName").value || "Exam";
   const subWrap = document.getElementById("subLinks");
-  subWrap.innerHTML = TAB_ORDER.map(k => `<a href="#" data-cat="${k}" class="${state.activeTab===k?'active':''}">${CATEGORY_META[k].label}</a>`).join("");
+  subWrap.innerHTML = TAB_ORDER.map(k =>
+    `<a href="${routeFor(examName, k)}" data-cat="${k}" class="${state.activeTab===k?'active':''}">${CATEGORY_META[k].label}</a>`
+  ).join("");
   subWrap.querySelectorAll("a").forEach(a => a.addEventListener("click", (e) => {
-    e.preventDefault();
+    e.preventDefault(); // intercept for SPA nav; href is still a real, shareable URL
     state.activeTab = a.dataset.cat;
     state.checked.add(a.dataset.cat);
+    navigateTo(document.getElementById("examName").value || "Exam", state.activeTab);
     render();
   }));
 }
@@ -303,7 +353,43 @@ async function fetchData() {
   render();
 }
 
-document.getElementById("fetchBtn").addEventListener("click", fetchData);
+document.getElementById("fetchBtn").addEventListener("click", () => {
+  navigateTo(document.getElementById("examName").value || "Exam", state.activeTab);
+  fetchData();
+});
+
+// Typing an exam in the top search box and hitting Enter navigates + fetches,
+// same as changing the exam name in the dev bar.
+document.getElementById("topSearch").addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" || !e.target.value.trim()) return;
+  const name = e.target.value.trim();
+  document.getElementById("examName").value = name;
+  document.getElementById("searchTerm").value = name.toLowerCase();
+  navigateTo(name, state.activeTab);
+  fetchData();
+});
+
+window.addEventListener("popstate", () => {
+  const { examName, tab } = parseRoute(location.pathname);
+  if (examName) document.getElementById("examName").value = examName;
+  state.activeTab = tab;
+  state.checked.add(tab);
+  render(); // re-render from existing data; refetch only if you want fresh data per nav
+});
+
+// ---- initial load: adopt whatever exam/category the URL already specifies ----
+(function initFromUrl() {
+  const { examName, tab } = parseRoute(location.pathname);
+  if (examName) {
+    document.getElementById("examName").value = examName;
+    document.getElementById("searchTerm").value = examName.toLowerCase();
+  }
+  state.activeTab = tab;
+  state.checked = new Set([tab]);
+  // Normalize the URL (fills in a default exam slug if none was present) without adding a history entry.
+  navigateTo(document.getElementById("examName").value || "Exam", state.activeTab, { replace: true });
+})();
+
 fetchData();
 </script>
 </body>
