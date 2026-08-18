@@ -3,121 +3,148 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Exam Kit</title>
+<title>PrepKit — Exam Study Material</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #0B1220; --paper: #F7F5EF; --gold: #E8B923; --gold-soft:#f2c94c;
-    --teal: #1F6F5C; --teal-soft:#4FBF9F; --slate: #5C6B7A; --coral:#D64545; --coral-soft:#F3A5A5;
+    --indigo: #3454D1; --indigo-dark:#28409f; --amber:#F5A623; --coral:#E24C4C;
+    --ink:#111827; --slate:#6B7280; --line:#E5E7EB; --bg:#FFFFFF; --bgsoft:#F7F8FA;
+    --green:#1F8B5C;
   }
   * { box-sizing: border-box; }
-  body { margin:0; background:var(--ink); color:var(--paper); font-family:'Inter',system-ui,sans-serif; }
-  .font-serif { font-family:'Zilla Slab',serif; }
-  .font-mono { font-family:'IBM Plex Mono',monospace; }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Inter',system-ui,sans-serif; }
+  .brand { font-family:'Poppins',sans-serif; font-weight:800; letter-spacing:-0.02em; }
+  .mono { font-family:'IBM Plex Mono',monospace; }
+  a { color: var(--indigo); text-decoration:none; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
 
-  .configbar { position: sticky; top:0; z-index: 20; background: rgba(11,18,32,.95); border-bottom: 1px solid rgba(255,255,255,.1); backdrop-filter: blur(6px); }
-  .configbar .row { display:flex; flex-wrap:wrap; gap:8px; padding: 10px 0; align-items:center; }
-  input[type=text] { background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); border-radius:6px; padding:6px 8px; color:var(--paper); font-size:12px; }
-  input[type=text]::placeholder { color:#64748b; }
-  #searchTerm, #examName { width: 150px; }
-  #proxyUrl { flex:1; min-width:220px; }
-  button.primary { display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; background:var(--gold); color:var(--ink); border:none; border-radius:6px; padding:7px 10px; cursor:pointer; }
-  button.primary:hover { background: var(--gold-soft); }
-  .badge { font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; padding:5px 8px; border-radius:6px; border:1px solid rgba(255,255,255,.15); color:#94a3b8; background: rgba(255,255,255,.05); }
-  .badge.live { color: var(--teal-soft); border-color: rgba(31,111,92,.5); background: rgba(31,111,92,.2); }
-  .badge.error { color: var(--coral-soft); border-color: rgba(214,69,69,.5); background: rgba(214,69,69,.15); }
+  header.site { border-bottom: 1px solid var(--line); position: sticky; top:0; background:#fff; z-index: 30; }
+  .headerbar { display:flex; align-items:center; gap:16px; padding: 14px 0; }
+  .logo { font-size: 22px; color: var(--indigo); white-space:nowrap; }
+  .logo span { color: var(--amber); }
+  .examselect { display:flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:8px; padding:8px 12px; font-size:13px; font-weight:600; color:var(--ink); background:#fff; cursor:pointer; white-space:nowrap; }
+  .searchbox { flex:1; display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:8px; padding:9px 14px; color:var(--slate); }
+  .searchbox input { border:none; outline:none; flex:1; font-size:13.5px; font-family:inherit; color:var(--ink); }
+  .headerbtn { border:1px solid var(--line); border-radius:8px; padding:9px 16px; font-size:13px; font-weight:600; background:#fff; cursor:pointer; white-space:nowrap; }
+  .headerbtn.primary { background: var(--indigo); color:#fff; border-color:var(--indigo); }
 
-  .hero { padding: 32px 0 20px; }
-  .ticket { background: var(--paper); color: var(--ink); border-radius: 14px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,.35); display:grid; grid-template-columns: 1fr; }
-  @media (min-width: 640px) { .ticket { grid-template-columns: 1fr auto; } }
-  .ticket-main { padding: 28px; }
-  .eyebrow { display:flex; align-items:center; gap:6px; font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.2em; color:var(--slate); margin-bottom:10px; }
-  h1 { font-family:'Zilla Slab',serif; font-size: 34px; margin: 0 0 8px; }
-  h1 span { color: var(--teal); }
-  .sub { font-size: 13.5px; color:#3A4552; max-width: 420px; margin: 0 0 18px; }
-  .stats { display:flex; flex-wrap:wrap; gap:8px; }
-  .stat { font-family:'IBM Plex Mono',monospace; font-size:11px; background: rgba(11,18,32,.05); border:1px solid rgba(11,18,32,.1); border-radius:6px; padding:4px 8px; }
-  .stat b { color: var(--teal); }
-  .ticket-side { display:none; border-left: 2px dashed rgba(11,18,32,.15); padding: 24px; text-align:center; }
-  @media (min-width: 640px) { .ticket-side { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; } }
-  .roll { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--slate); line-height:1.5; }
-  .roll b { display:block; font-size:13px; color:var(--ink); }
-  .getkit { display:flex; align-items:center; gap:6px; background: var(--ink); color: var(--paper); font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; border:none; border-radius:6px; padding:8px 12px; cursor:pointer; }
+  .devbar { background: var(--ink); color:#cbd5e1; }
+  .devbar .row { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 0; font-size:11.5px; }
+  .devbar input[type=text] { background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); border-radius:5px; padding:5px 8px; color:#fff; font-size:11.5px; font-family:'IBM Plex Mono',monospace; }
+  .devbar #searchTerm, .devbar #examName { width:130px; }
+  .devbar #proxyUrl { flex:1; min-width:200px; }
+  .devbar button { font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.04em; background: var(--amber); color:#111; border:none; border-radius:5px; padding:6px 10px; cursor:pointer; }
+  .devbar .badge { font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; padding:4px 8px; border-radius:5px; border:1px solid rgba(255,255,255,.2); color:#94a3b8; }
+  .devbar .badge.live { color:#6ee7b7; border-color: rgba(31,139,92,.5); }
+  .devbar .badge.error { color:#fca5a5; border-color: rgba(226,76,76,.5); }
 
-  .tabs { display:flex; flex-wrap:wrap; gap:6px; margin: 18px 0; }
-  .tab { display:flex; align-items:center; gap:6px; font-size:12px; padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.15); color:#cbd5e1; background:transparent; cursor:pointer; }
-  .tab .count { font-family:'IBM Plex Mono',monospace; font-size:10px; opacity:.7; }
-  .tab.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight:600; }
+  .tagline { font-size: 13px; color: var(--slate); padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .tagline b { color: var(--ink); }
 
-  .grid { display:grid; grid-template-columns: 1fr; gap:12px; padding-bottom: 64px; }
-  @media (min-width: 640px) { .grid { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
+  .layout { display:grid; grid-template-columns: 220px 1fr; gap: 28px; padding: 24px 0 64px; align-items:start; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } .sidebar { order: 2; } }
 
-  .card { background:#111a2b; border:1px solid rgba(255,255,255,.1); border-radius:10px; padding:16px; }
-  .card:hover { border-color: rgba(232,185,35,.5); }
-  .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:8px; }
-  .card-title { font-family:'Zilla Slab',serif; font-size:15px; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .pill { flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.05em; padding:2px 6px; border-radius:4px; }
-  .pill.free { background: rgba(31,111,92,.3); color: var(--teal-soft); border:1px solid rgba(31,111,92,.5); }
-  .pill.paid { background: rgba(214,69,69,.2); color: var(--coral-soft); border:1px solid rgba(214,69,69,.4); }
-  .desc { font-size:12.5px; color:#94a3b8; line-height:1.5; margin:0 0 10px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom: 10px; }
-  .chip { font-family:'IBM Plex Mono',monospace; font-size:11px; color:#cbd5e1; background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:4px; padding:2px 6px; }
-  .open { width:100%; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; background: var(--gold); color: var(--ink); border:none; border-radius:6px; padding:7px; cursor:pointer; }
-  .open:hover { background: var(--gold-soft); }
+  .sidebar h3 { font-size: 15px; margin: 0 0 12px; }
+  .filtergroup { margin-bottom: 24px; }
+  .filtergroup label { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink); padding:6px 0; cursor:pointer; }
+  .filtergroup input[type=checkbox] { width:15px; height:15px; accent-color: var(--indigo); }
+  .filtergroup .count { margin-left:auto; color:var(--slate); font-size:11.5px; }
+  .sublinks a { display:block; font-size:13px; padding:5px 0; color: var(--ink); }
+  .sublinks a:hover, .sublinks a.active { color: var(--indigo); font-weight:600; }
 
-  .empty { text-align:center; padding: 60px 0; border:1px dashed rgba(255,255,255,.15); border-radius:10px; color:#64748b; font-size:13px; }
+  .sectionhead { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px; }
+  .sectionhead h2 { font-size: 19px; margin:0; }
+  .sectionhead .viewall { font-size:13px; font-weight:600; }
+
+  .grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 1020px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 760px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+
+  .card { border:1px solid var(--line); border-radius:10px; overflow:hidden; background:#fff; display:flex; flex-direction:column; transition: box-shadow .15s, border-color .15s; }
+  .card:hover { border-color:#cfd6e4; box-shadow: 0 6px 18px rgba(17,24,39,.08); }
+  .thumb { position:relative; aspect-ratio: 4/3; background: linear-gradient(135deg, var(--indigo), var(--indigo-dark)); display:flex; align-items:center; justify-content:center; }
+  .thumb .ribbon { position:absolute; top:10px; left:0; background: var(--ink); color:#fff; font-size:10.5px; font-weight:600; padding:4px 10px; border-radius:0 4px 4px 0; }
+  .thumb .heart { position:absolute; top:8px; right:8px; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,.9); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; border:none; }
+  .thumb .initial { font-family:'Poppins',sans-serif; font-weight:800; font-size:34px; color:#fff; opacity:.9; }
+  .card-body { padding: 12px 14px 14px; display:flex; flex-direction:column; gap:8px; flex:1; }
+  .chiprow { display:flex; gap:6px; flex-wrap:wrap; }
+  .chip { font-size:10.5px; font-weight:600; padding:3px 7px; border-radius:5px; background: var(--bgsoft); color: var(--slate); border:1px solid var(--line); }
+  .chip.free { color: var(--green); background:#EAF7F0; border-color:#CFEFDD; }
+  .card-title { font-size: 14px; font-weight:600; line-height:1.35; margin:0; color:var(--ink); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .priceline { display:flex; align-items:baseline; gap:8px; margin-top:auto; padding-top:6px; border-top:1px dashed var(--line); }
+  .price { font-size:16px; font-weight:800; color: var(--ink); }
+  .strike { font-size:12.5px; color:var(--slate); text-decoration: line-through; }
+  .off { font-size:12px; color: var(--green); font-weight:700; }
+  .openbtn { margin-top:8px; width:100%; background: var(--indigo); color:#fff; border:none; border-radius:7px; padding:9px; font-size:13px; font-weight:600; cursor:pointer; }
+  .openbtn:hover { background: var(--indigo-dark); }
+  .openbtn:disabled { background:#9CA3AF; cursor:default; }
+
+  .empty { grid-column: 1 / -1; text-align:center; padding:60px 0; border:1px dashed var(--line); border-radius:10px; color:var(--slate); font-size:13px; }
 </style>
 </head>
 <body>
-  <div class="configbar">
+
+<header class="site">
+  <div class="wrap headerbar">
+    <div class="logo brand">Prep<span>Kit</span></div>
+    <div class="examselect" id="examSelectBtn"><span id="examSelectLabel">SSC CGL</span> ▾</div>
+    <div class="searchbox">🔍<input type="text" id="topSearch" placeholder="Find video courses, mock tests, live classes..." /></div>
+    <button class="headerbtn">Refer &amp; Earn</button>
+    <button class="headerbtn primary">Signup/Login</button>
+  </div>
+  <div class="devbar">
     <div class="wrap row">
+      <span class="mono" style="opacity:.6">DEV</span>
       <input type="text" id="examName" value="SSC CGL" placeholder="Exam name" />
       <input type="text" id="searchTerm" value="ssc cgl" placeholder="search term" />
-      <input type="text" id="proxyUrl" placeholder="Backend proxy base URL (e.g. http://localhost:8787) — leave empty for demo data" style="flex:1;" />
-      <button class="primary" id="fetchBtn">↻ Fetch</button>
+      <input type="text" id="proxyUrl" placeholder="Backend proxy base URL — leave empty for demo data" />
+      <button id="fetchBtn">↻ Fetch</button>
       <span class="badge" id="modeBadge">Demo data</span>
     </div>
   </div>
+</header>
 
-  <div class="wrap hero">
-    <div class="ticket">
-      <div class="ticket-main">
-        <div class="eyebrow">🎫 Exam Kit — Admit to Practice</div>
-        <h1 id="heroTitle">SSC CGL <span>Exam Kit</span></h1>
-        <p class="sub" id="heroSub">Every free test, previous paper, quiz, and live series — pulled into one kit.</p>
-        <div class="stats" id="heroStats"></div>
-      </div>
-      <div class="ticket-side">
-        <div class="roll">ROLL&nbsp;TERM<b id="rollTerm">SSC CGL</b></div>
-        <button class="getkit" id="getKitBtn">⬇ Get Kit</button>
-      </div>
+<div class="wrap tagline">Buy <b id="taglineExam">SSC CGL</b> Study Material 2026. Prepare from <b id="taglineExam2">SSC CGL</b> notes, mock tests, and a study plan built around real cutoffs.</div>
+
+<div class="wrap layout">
+  <aside class="sidebar">
+    <h3>Filters</h3>
+    <div class="filtergroup" id="categoryFilters"></div>
+    <h3>Sub Category</h3>
+    <div class="sublinks" id="subLinks"></div>
+  </aside>
+
+  <main>
+    <div class="sectionhead">
+      <h2 id="sectionTitle">Free Tests</h2>
+      <a href="#" class="viewall">View All →</a>
     </div>
-  </div>
-
-  <div class="wrap">
-    <div class="tabs" id="tabs"></div>
-    <div id="content"></div>
-  </div>
+    <div class="grid" id="content"></div>
+  </main>
+</div>
 
 <script>
 const CATEGORY_META = {
-  freeTests:  { label: "Free Tests", tag: "Free" },
-  pyp:        { label: "Previous Year Papers", tag: "PYP" },
-  quizzes:    { label: "Quizzes", tag: "Quiz" },
-  tests:      { label: "Live Tests", tag: "Live" },
-  testSeries: { label: "Test Series", tag: "Series" },
-  courses:    { label: "Courses", tag: "Course" },
-  videos:     { label: "Video Lectures", tag: "Video" },
-  articles:   { label: "Articles", tag: "Read" },
+  freeTests:  { label: "Free Tests", initial: "FT", tag: "Free Test" },
+  pyp:        { label: "Previous Year Papers", initial: "PY", tag: "PYP" },
+  quizzes:    { label: "Quizzes", initial: "QZ", tag: "Quiz" },
+  tests:      { label: "Live Tests", initial: "LT", tag: "Live" },
+  testSeries: { label: "Test Series", initial: "TS", tag: "Series" },
+  courses:    { label: "Courses", initial: "CR", tag: "Course" },
+  videos:     { label: "Video Lectures", initial: "VL", tag: "Video" },
+  articles:   { label: "Articles", initial: "AR", tag: "Article" },
 };
 const TAB_ORDER = Object.keys(CATEGORY_META);
 
 function makeMockData(examName, term) {
+  const priced = (mrp) => {
+    const price = Math.round(mrp * 0.21);
+    return { price, mrp, off: Math.round((1 - price / mrp) * 100) };
+  };
   const base = (n, extra = {}) => ({
-    id: `${term}-${n}`,
+    id: `${term}-${extra.kind || "item"}-${n}`,
     title: `${examName} ${extra.kind || "Paper"} ${n}`,
     description: extra.desc || `Full-length ${examName} practice paper covering all sections.`,
     isFree: extra.isFree ?? (n % 3 === 0),
@@ -125,101 +152,126 @@ function makeMockData(examName, term) {
     questionCount: extra.questionCount ?? 80 + (n % 4) * 20,
     totalMark: extra.totalMark ?? 100 + (n % 4) * 25,
     totalAttempts: extra.totalAttempts ?? 4200 + n * 733,
+    ...(extra.isFree ? {} : priced(extra.mrp ?? 999 + n * 300)),
   });
   return {
-    freeTests: [1,2,3,4].map(n => base(n, { kind: "Free Mock", isFree: true })),
-    pyp: [2025,2024,2023,2022].map((y,i) => base(i+1, { kind: `${y} Paper`, isFree: i<2, desc:`Official ${examName} question paper, ${y} session.` })),
-    quizzes: [1,2,3,4,5,6].map(n => base(n, { kind:"Topic Quiz", isFree: n%2===0, questionCount:15+n, totalMark:15+n, duration:10+n })),
-    tests: [1,2,3].map(n => base(n, { kind:"Live Test", isFree:false, desc:"Scheduled full-syllabus live test with All-India ranking." })),
-    testSeries: [1,2].map(n => ({ id:`series-${n}`, title:`${examName} Complete Test Series ${n}`, description:"Structured series covering prelims and mains with sectional cutoffs.", totalAttempts: 18000+n*4200, paidPlusFree: 45+n*10 })),
-    courses: [1,2].map(n => ({ id:`course-${n}`, title:`${examName} Foundation to Advanced Batch ${n}`, description:`Live + recorded classes, notes, and doubt sessions.`, isFree:false })),
-    videos: [1,2,3,4].map(n => ({ id:`video-${n}`, title:`${examName} Concept Class ${n}`, duration: 1800+n*300, viewCount: 12000+n*3100 })),
-    articles: [1,2,3].map(n => ({ id:`article-${n}`, title:`${examName} Syllabus & Strategy — Part ${n}`, description:`A breakdown of what to prioritize this week.` })),
+    freeTests: [1,2,3,4].map(n => base(n, { kind:"Free Mock", isFree:true })),
+    pyp: [2025,2024,2023,2022].map((y,i) => base(i+1, { kind:`${y} Paper`, isFree:i<2, desc:`Official ${examName} question paper, ${y} session.`, mrp: 499 })),
+    quizzes: [1,2,3,4,5,6].map(n => base(n, { kind:"Topic Quiz", isFree:n%2===0, questionCount:15+n, totalMark:15+n, duration:10+n, mrp: 199 })),
+    tests: [1,2,3].map(n => base(n, { kind:"Live Test", isFree:false, desc:"Scheduled full-syllabus live test with All-India ranking.", mrp: 799 })),
+    testSeries: [1,2].map(n => ({ ...base(n, { kind:"Test Series", isFree:false, mrp: 6814 }), title:`${examName} Complete Test Series ${n}`, description:"Structured series covering prelims and mains with sectional cutoffs." })),
+    courses: [1,2].map(n => ({ ...base(n, { kind:"Batch", isFree:false, mrp: 12100 }), title:`${examName} Foundation to Advanced Batch ${n}`, description:"Live + recorded classes, notes, and doubt sessions." })),
+    videos: [1,2,3,4].map(n => ({ id:`${term}-video-${n}`, title:`${examName} Concept Class ${n}`, isFree: n%2===0, duration: 1800+n*300, viewCount: 12000+n*3100, ...(n%2===0 ? {} : priced(299)) })),
+    articles: [1,2,3].map(n => ({ id:`${term}-article-${n}`, title:`${examName} Syllabus & Strategy — Part ${n}`, description:"A breakdown of what to prioritize this week.", isFree:true })),
   };
 }
 
+function fmtNum(n) { return n?.toLocaleString?.() ?? n; }
 function formatDuration(mins) {
   if (mins == null) return null;
   if (mins > 300) mins = Math.round(mins / 60);
   const h = Math.floor(mins/60), m = mins % 60;
   return h ? `${h}h ${m}m` : `${m}m`;
 }
-function fmtNum(n) { return n?.toLocaleString?.() ?? n; }
 
-let state = { data: {}, activeTab: "freeTests", mode: "mock" };
+let state = { data: {}, activeTab: "freeTests", checked: new Set(["freeTests"]), mode: "mock" };
+
+function buildFilters() {
+  const wrap = document.getElementById("categoryFilters");
+  wrap.innerHTML = TAB_ORDER.map(k => `
+    <label>
+      <input type="checkbox" data-cat="${k}" ${state.checked.has(k) ? "checked" : ""} />
+      ${CATEGORY_META[k].label}
+      <span class="count">${(state.data[k]||[]).length}</span>
+    </label>`).join("");
+  wrap.querySelectorAll("input[type=checkbox]").forEach(cb => cb.addEventListener("change", () => {
+    cb.checked ? state.checked.add(cb.dataset.cat) : state.checked.delete(cb.dataset.cat);
+    if (state.checked.size === 0) { state.checked.add(cb.dataset.cat); cb.checked = true; }
+    if (!state.checked.has(state.activeTab)) state.activeTab = [...state.checked][0];
+    renderMain();
+  }));
+
+  const subWrap = document.getElementById("subLinks");
+  subWrap.innerHTML = TAB_ORDER.map(k => `<a href="#" data-cat="${k}" class="${state.activeTab===k?'active':''}">${CATEGORY_META[k].label}</a>`).join("");
+  subWrap.querySelectorAll("a").forEach(a => a.addEventListener("click", (e) => {
+    e.preventDefault();
+    state.activeTab = a.dataset.cat;
+    state.checked.add(a.dataset.cat);
+    render();
+  }));
+}
+
+function cardHtml(item, kind) {
+  const meta = CATEGORY_META[kind];
+  const chips = [];
+  if (item.duration != null) chips.push(`<span class="chip">${formatDuration(item.duration)}</span>`);
+  if (item.questionCount != null) chips.push(`<span class="chip">${item.questionCount} Qs</span>`);
+  if (item.totalAttempts != null) chips.push(`<span class="chip">${fmtNum(item.totalAttempts)} attempts</span>`);
+  if (item.viewCount != null) chips.push(`<span class="chip">${fmtNum(item.viewCount)} views</span>`);
+  if (item.isFree) chips.unshift(`<span class="chip free">Free</span>`);
+
+  const priceHtml = item.isFree
+    ? `<div class="priceline"><span class="price">Free</span></div>`
+    : (item.price != null
+        ? `<div class="priceline"><span class="price">₹${item.price}</span><span class="strike">₹${item.mrp}</span><span class="off">(${item.off}% off)</span></div>`
+        : "");
+
+  return `
+    <div class="card">
+      <div class="thumb">
+        <span class="ribbon">${meta.tag}</span>
+        <button class="heart" data-heart>♡</button>
+        <span class="initial">${meta.initial}</span>
+      </div>
+      <div class="card-body">
+        <div class="chiprow">${chips.join("")}</div>
+        <p class="card-title">${item.title}</p>
+        ${priceHtml}
+        <button class="openbtn" data-id="${item.id}">Open →</button>
+      </div>
+    </div>`;
+}
+
+function renderMain() {
+  const items = state.data[state.activeTab] || [];
+  document.getElementById("sectionTitle").innerHTML =
+    `${CATEGORY_META[state.activeTab].label} <span class="mono" style="color:var(--slate);font-weight:400;font-size:14px">(${items.length})</span>`;
+
+  const content = document.getElementById("content");
+  content.innerHTML = items.length
+    ? items.map(it => cardHtml(it, state.activeTab)).join("")
+    : `<div class="empty">Nothing here yet — try a different term or fetch again.</div>`;
+
+  document.querySelectorAll(".sublinks a").forEach(a => a.classList.toggle("active", a.dataset.cat === state.activeTab));
+}
 
 function render() {
   const examName = document.getElementById("examName").value || "Exam";
-  const term = document.getElementById("searchTerm").value || "";
-
-  document.getElementById("heroTitle").innerHTML = `${examName} <span>Exam Kit</span>`;
-  document.getElementById("heroSub").textContent = `Every free test, previous paper, quiz, and live series for ${examName} — pulled into one kit.`;
-  document.getElementById("rollTerm").textContent = term.toUpperCase();
+  document.getElementById("examSelectLabel").textContent = examName;
+  document.getElementById("taglineExam").textContent = examName;
+  document.getElementById("taglineExam2").textContent = examName;
 
   const badge = document.getElementById("modeBadge");
   badge.className = "badge " + (state.mode === "live" ? "live" : state.mode === "error" ? "error" : "");
   badge.textContent = state.mode === "live" ? "● Live proxy" : state.mode === "error" ? "⚠ Proxy failed — demo data" : "○ Demo data";
 
-  const statsEl = document.getElementById("heroStats");
-  statsEl.innerHTML = TAB_ORDER.filter(k => (state.data[k]||[]).length).slice(0,4)
-    .map(k => `<div class="stat"><b>${(state.data[k]||[]).length}</b> ${CATEGORY_META[k].label}</div>`).join("");
-
-  const tabsEl = document.getElementById("tabs");
-  tabsEl.innerHTML = TAB_ORDER.map(k => `
-    <button class="tab ${state.activeTab === k ? "active" : ""}" data-tab="${k}">
-      ${CATEGORY_META[k].label} <span class="count">${(state.data[k]||[]).length}</span>
-    </button>`).join("");
-  tabsEl.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", () => {
-    state.activeTab = btn.dataset.tab; render();
-  }));
-
-  const items = state.data[state.activeTab] || [];
-  const content = document.getElementById("content");
-  if (items.length === 0) {
-    content.innerHTML = `<div class="empty">Nothing here yet for "${term}" — try a different term or fetch again.</div>`;
-    return;
-  }
-  content.innerHTML = `<div class="grid">${items.map(cardHtml).join("")}</div>`;
+  buildFilters();
+  renderMain();
 }
 
-function cardHtml(item) {
-  const chips = [];
-  if (item.duration != null) chips.push(`<span class="chip">${formatDuration(item.duration)}</span>`);
-  if (item.questionCount != null) chips.push(`<span class="chip">${item.questionCount} Qs</span>`);
-  if (item.totalMark != null) chips.push(`<span class="chip">${item.totalMark} marks</span>`);
-  if (item.totalAttempts != null) chips.push(`<span class="chip">${fmtNum(item.totalAttempts)} attempts</span>`);
-  if (item.viewCount != null) chips.push(`<span class="chip">${fmtNum(item.viewCount)} views</span>`);
-  const pill = item.isFree === undefined ? "" :
-    `<span class="pill ${item.isFree ? "free" : "paid"}">${item.isFree ? "Free" : "Paid"}</span>`;
-  return `
-    <div class="card">
-      <div class="card-top">
-        <h3 class="card-title">${item.title}</h3>
-        ${pill}
-      </div>
-      ${item.description ? `<p class="desc">${item.description}</p>` : ""}
-      <div class="chips">${chips.join("")}</div>
-      <button class="open" data-id="${item.id}">Open →</button>
-    </div>`;
-}
-
-// Event delegation: works for cards re-rendered on every tab/fetch change.
 document.getElementById("content").addEventListener("click", (e) => {
-  const btn = e.target.closest(".open");
+  const heart = e.target.closest("[data-heart]");
+  if (heart) { heart.textContent = heart.textContent === "♡" ? "♥" : "♡"; heart.style.color = heart.textContent === "♥" ? "#E24C4C" : ""; return; }
+
+  const btn = e.target.closest(".openbtn");
   if (!btn) return;
   const id = btn.dataset.id;
   const items = state.data[state.activeTab] || [];
   const item = items.find((it) => it.id === id);
   const link = item?.url || item?.permalink || item?.addressUrl;
-
-  if (link) {
-    window.open(link, "_blank", "noopener");
-    return;
-  }
-  // Demo/mock data has no real destination — say so instead of doing nothing.
+  if (link) { window.open(link, "_blank", "noopener"); return; }
   const original = btn.textContent;
-  btn.textContent = "No link (demo data)";
-  btn.disabled = true;
+  btn.textContent = "No link (demo data)"; btn.disabled = true;
   setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1600);
 });
 
@@ -252,7 +304,6 @@ async function fetchData() {
 }
 
 document.getElementById("fetchBtn").addEventListener("click", fetchData);
-document.getElementById("getKitBtn").addEventListener("click", fetchData);
 fetchData();
 </script>
 </body>
