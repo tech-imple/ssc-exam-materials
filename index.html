@@ -199,9 +199,29 @@ function cardHtml(item) {
       </div>
       ${item.description ? `<p class="desc">${item.description}</p>` : ""}
       <div class="chips">${chips.join("")}</div>
-      <button class="open">Open →</button>
+      <button class="open" data-id="${item.id}">Open →</button>
     </div>`;
 }
+
+// Event delegation: works for cards re-rendered on every tab/fetch change.
+document.getElementById("content").addEventListener("click", (e) => {
+  const btn = e.target.closest(".open");
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const items = state.data[state.activeTab] || [];
+  const item = items.find((it) => it.id === id);
+  const link = item?.url || item?.permalink || item?.addressUrl;
+
+  if (link) {
+    window.open(link, "_blank", "noopener");
+    return;
+  }
+  // Demo/mock data has no real destination — say so instead of doing nothing.
+  const original = btn.textContent;
+  btn.textContent = "No link (demo data)";
+  btn.disabled = true;
+  setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1600);
+});
 
 async function fetchData() {
   const examName = document.getElementById("examName").value || "Exam";
